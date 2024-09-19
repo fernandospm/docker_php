@@ -5,11 +5,7 @@ FROM ubuntu:22.04
 RUN apt-get update --fix-missing && apt-get upgrade -y
 
 # Instalar Apache2 y PHP
-RUN apt-get update && apt-get install -y \
-    php-fpm \
-    apache2 \
-    libapache2-mod-php
-
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php && apt-get clean
 # Actulaizar la imagen
 RUN apt-get upgrade -y
 
@@ -22,10 +18,7 @@ WORKDIR /var/www/html
 # Exponer el puerto 8080 para Apache
 EXPOSE 8080
 
-# Cambiar el puerto de Apache al 8080
-RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
-
 # Iniciar Apache en el inicio del contenedor
-CMD ["apachectl", "-D", "FOREGROUND"]
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "/var/www/html"]
 
 
